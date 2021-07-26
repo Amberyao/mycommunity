@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" xmlns:c="http://www.w3.org/1999/html">
+
+<body>
+
+<div th:fragment="nav">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">amber的社区</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">amber的社区</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="搜索问题">
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown" th:if="${session.user != null}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false" th:text="${session.user.getName()}"><span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">消息中心</a></li>
+                            <li><a href="#">个人资料</a></li>
+                            <li><a href="#">退出登录</a></li>
+                        </ul>
+                    </li>
+                    <!--提交后会返回一个code-->
+                    <!--<li><a href="#" data-toggle="modal" data-target="#myModal">登录</a></li>-->
+                    <!--<li><a href="https://github.com/login/oauth/authorize?client_id=71fe5a1daf2003ac3300&redirect_uri=http://localhost:8080/callback&scope=user&state=1">登录</a></li>-->
+                    <li th:if="${session.user==null}">
+                        <a href="https://gitee.com/oauth/authorize?client_id=11d662f382b526acf7afd63f0577b7e7ded6d10ccdd33a7c002f66085e6d3a2a&redirect_uri=http://localhost:8080/callback&response_type=code&state=1">登录</a>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document" style="margin-top: 200px;width: 300px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">登录注册</h4>
+                </div>
+                <div class="modal-body" style="text-align:center">
+                    <a th:href="@{https://gitee.com/oauth/authorize(client_id='11d662f382b526acf7afd63f0577b7e7ded6d10ccdd33a7c002f66085e6d3a2a',redirect_uri=${#httpServletRequest.getServletContext().getAttribute('giteeRedirectUri')},response_type=code)}">
+                        <img src="/images/gitee.png">-->
+                    </a>
+                    <a th:href="@{https://github.com/login/oauth/authorize(client_id='71fe5a1daf2003ac3300',redirect_uri=${#httpServletRequest.getServletContext().getAttribute('githubRedirectUri')},scope='user',state=1)}">
+                        <img src="/images/github.png">
+                    </a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>amber的社区</title>
+    <head th:insert="~{import :: head}"></head>
+</head>
+<script type="application/javascript">
+    window.onload = function () {
+        var closable = window.localStorage.getItem("closable");
+        if (closable == "true") {
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
+<body>
+<div th:insert="~{navigation :: nav}"></div>
+
+<div th:insert="~{footer :: foot}"></div>
+</body>
+</html>
