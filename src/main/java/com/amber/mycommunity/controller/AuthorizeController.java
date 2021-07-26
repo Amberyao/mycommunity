@@ -70,7 +70,9 @@ public class AuthorizeController {
             user.setGmtModified(user.getGmtCreate());
             userMapper.insert(user);
             //登录成功，写cookie 和session
-            request.getSession().setAttribute("user",giteeUser);
+            //实现持久化登录状态
+            response.addCookie(new Cookie("token",token));
+            //request.getSession().setAttribute("user",giteeUser);
             return "redirect:/";
         }else {
             //登录失败，重新登录
