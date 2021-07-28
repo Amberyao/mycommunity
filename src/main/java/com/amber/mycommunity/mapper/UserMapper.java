@@ -1,10 +1,7 @@
 package com.amber.mycommunity.mapper;
 
 import com.amber.mycommunity.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,4 +22,10 @@ public interface UserMapper{
 
     @Select("select * from user where id = #{id}")
     User findById(@Param("id") Long id);
+
+    @Select("select * from user where account_id = #{accountId}")
+    User findByAccountId(@Param("accountId") String accountId);
+
+    @Update("update user set name = #{name},token=#{token},gmt_Modified=#{gmtModified},avatar_url=#{avatarUrl}")
+    void update(User user);
 }

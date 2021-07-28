@@ -2,6 +2,8 @@ package com.amber.mycommunity.service;
 
 import com.amber.mycommunity.dto.PaginationDTO;
 import com.amber.mycommunity.dto.QuestionDTO;
+import com.amber.mycommunity.exception.CustomizeErrorCode;
+import com.amber.mycommunity.exception.CustomizeException;
 import com.amber.mycommunity.mapper.QuestionMapper;
 import com.amber.mycommunity.mapper.UserMapper;
 import com.amber.mycommunity.model.Question;
@@ -102,4 +104,15 @@ public class QuestionService {
     }
 
 
+    public QuestionDTO getById(Long id) {
+        Question question = questionMapper.getById(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);
+        User user = userMapper.findById(question.getCreator());
+        questionDTO.setUser(user);
+        return questionDTO;
+    }
 }

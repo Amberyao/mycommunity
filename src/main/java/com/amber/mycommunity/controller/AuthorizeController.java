@@ -7,6 +7,7 @@ import com.amber.mycommunity.model.User;
 import com.amber.mycommunity.provider.GiteeProvider;
 import com.amber.mycommunity.provider.Githubprovider;
 import com.amber.mycommunity.provider.dto.GiteeUser;
+import com.amber.mycommunity.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,6 +47,9 @@ public class AuthorizeController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private UserService userService;
+
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
@@ -66,10 +70,8 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(giteeUser.getName());
             user.setAccountId(String.valueOf(giteeUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(giteeUser.getAvatarUrl());
-            userMapper.insert(user);
+            userService.createOrUpdate(user);
             //登录成功，写cookie 和session
             //实现持久化登录状态
             response.addCookie(new Cookie("token",token));
@@ -84,7 +86,8 @@ public class AuthorizeController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request,
                          HttpServletResponse response) {
-        request.getSession().invalidate();
+        //request.getSession().invalidate();
+        request.getSession().removeAttribute("user");
         Cookie cookie = new Cookie("token", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
