@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Question {
 
-  private long id;
+  private Long id;
   private String title;
   private String description;
-  private long gmtCreate;
-  private long gmtModified;
-  private long creator;
-  private long commentCount;
-  private long viewCount;
-  private long likeCount;
+  private Long gmtCreate;
+  private Long gmtModified;
+  private Long creator;
+  private Integer commentCount;
+  private Integer viewCount;
+  private Integer likeCount;
   private String tag;
-  private long sticky;
+  private Integer sticky;
 
 }
