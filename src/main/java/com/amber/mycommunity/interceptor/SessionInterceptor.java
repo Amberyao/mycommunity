@@ -2,6 +2,7 @@ package com.amber.mycommunity.interceptor;
 
 import com.amber.mycommunity.mapper.UserMapper;
 import com.amber.mycommunity.model.User;
+import com.amber.mycommunity.model.UserExample;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,9 +45,13 @@ public class SessionInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
+                    UserExample userExample = new UserExample();
+                    userExample.createCriteria()
+                            .andTokenEqualTo(token);
+                    List<User> users = userMapper.selectByExample(userExample);
+                    //User user = userMapper.findByToken(token);
+                    if (users.size() != 0) {
+                        request.getSession().setAttribute("user", users);
                     }
                     break;
                 }

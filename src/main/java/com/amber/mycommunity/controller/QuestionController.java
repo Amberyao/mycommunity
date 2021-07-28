@@ -22,9 +22,9 @@ public class QuestionController {
 
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name ="id") String id, Model model){
-        Long questionId = null;
+        Integer questionId = null;
         try {
-            questionId = Long.parseLong(id);
+            questionId = Integer.parseInt(id);
         } catch (NumberFormatException e) {
             throw new CustomizeException(CustomizeErrorCode.INVALID_INPUT);
         }
