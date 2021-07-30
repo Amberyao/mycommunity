@@ -77,7 +77,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+    public PaginationDTO list(Long userId, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage;
 
@@ -125,7 +125,7 @@ public class QuestionService {
     }
 
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         //Question question = questionMapper.getById(id);
         Question question = questionMapper.selectByPrimaryKey(id);
         if (question == null) {
@@ -165,7 +165,7 @@ public class QuestionService {
         }
     }
 
-    public void incView(Integer questionId) {
+    public void incView(Long questionId) {
         /* 因为每次访问是从数据库中读取  当访问量大的时候会出现并发问题  可以使用乐观锁悲观锁  现阶段用累加解决
         Question question = questionMapper.selectByPrimaryKey(questionId);
         Question updateQuestion = new Question();
