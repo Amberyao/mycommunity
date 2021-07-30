@@ -29,6 +29,7 @@ public class IndexController {
                          @RequestParam(name = "sort", required = false) String sort){
         PaginationDTO paginationDTO= questionService.list(page,size);
         model.addAttribute("pagination",paginationDTO);
+        model.addAttribute("tag", tag);
 
         return "index";
     }

@@ -3,6 +3,8 @@ package com.amber.mycommunity.exception;
 /**
  * Created by codedrinker on 2019/5/28.
  */
+
+//自定义异常
 public class CustomizeException extends RuntimeException {
     private String message;
     private Integer code;

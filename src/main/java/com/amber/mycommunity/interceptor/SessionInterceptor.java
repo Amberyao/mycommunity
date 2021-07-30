@@ -37,7 +37,7 @@ public class SessionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //设置 context 级别的属性
         request.getServletContext().setAttribute("giteeRedirectUri", giteeRedirectUri);
-        request.getServletContext().setAttribute("githubRedirectUri", githubRedirectUri);
+        //request.getServletContext().setAttribute("githubRedirectUri", githubRedirectUri);
         // 没有登录的时候也可以查看导航
 
         Cookie[] cookies = request.getCookies();
@@ -51,7 +51,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                     List<User> users = userMapper.selectByExample(userExample);
                     //User user = userMapper.findByToken(token);
                     if (users.size() != 0) {
-                        request.getSession().setAttribute("user", users);
+                        HttpSession session = request.getSession();
+                        session.setAttribute("user", users.get(0));
                     }
                     break;
                 }

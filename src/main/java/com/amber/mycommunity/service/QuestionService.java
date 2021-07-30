@@ -4,6 +4,7 @@ import com.amber.mycommunity.dto.PaginationDTO;
 import com.amber.mycommunity.dto.QuestionDTO;
 import com.amber.mycommunity.exception.CustomizeErrorCode;
 import com.amber.mycommunity.exception.CustomizeException;
+import com.amber.mycommunity.mapper.QuestionExtMapper;
 import com.amber.mycommunity.mapper.QuestionMapper;
 import com.amber.mycommunity.mapper.UserMapper;
 import com.amber.mycommunity.model.Question;
@@ -29,13 +30,15 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
+
     public PaginationDTO list(Integer page, Integer size){
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage;
 
         //Integer totalCount= questionMapper.count();
         QuestionExample questionExample = new QuestionExample();
-        questionExample.createCriteria();
         Integer totalCount = (int) questionMapper.countByExample(questionExample);
 
 
@@ -57,7 +60,6 @@ public class QuestionService {
 
         //List<Question> questions = questionMapper.list(offset,size);
         QuestionExample example = new QuestionExample();
-        example.createCriteria();
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList=new ArrayList<>();
 
@@ -66,6 +68,7 @@ public class QuestionService {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
+            questionDTO.setDescription("");
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
@@ -160,5 +163,23 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public void incView(Integer questionId) {
+        /* 因为每次访问是从数据库中读取  当访问量大的时候会出现并发问题  可以使用乐观锁悲观锁  现阶段用累加解决
+        Question question = questionMapper.selectByPrimaryKey(questionId);
+        Question updateQuestion = new Question();
+        updateQuestion.setId(questionId);
+        updateQuestion.setViewCount(question.getViewCount()+1);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andIdEqualTo(questionId);
+        questionMapper.updateByExampleSelective(updateQuestion,questionExample);
+         */
+        Question question = new Question();
+        question.setId(questionId);
+        //递增1
+        question.setViewCount(1);
+        questionExtMapper.incView(question);
     }
 }

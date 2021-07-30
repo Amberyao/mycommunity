@@ -74,7 +74,9 @@ public class AuthorizeController {
             userService.createOrUpdate(user);
             //登录成功，写cookie 和session
             //实现持久化登录状态
-            response.addCookie(new Cookie("token",token));
+            Cookie cookie = new Cookie("token", token);
+            cookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+            response.addCookie(cookie);
             //request.getSession().setAttribute("user",giteeUser);
             return "redirect:/";
         }else {
@@ -87,7 +89,7 @@ public class AuthorizeController {
     public String logout(HttpServletRequest request,
                          HttpServletResponse response) {
         //request.getSession().invalidate();
-        request.getSession().removeAttribute("user");
+        //request.getSession().removeAttribute("user");
         Cookie cookie = new Cookie("token", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");

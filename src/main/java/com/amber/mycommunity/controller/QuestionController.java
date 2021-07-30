@@ -24,11 +24,15 @@ public class QuestionController {
     public String question(@PathVariable(name ="id") String id, Model model){
         Integer questionId = null;
         try {
-            questionId = Integer.parseInt(id);
+            questionId = Integer.valueOf(id);
         } catch (NumberFormatException e) {
             throw new CustomizeException(CustomizeErrorCode.INVALID_INPUT);
         }
-        QuestionDTO questionDTO=questionService.getById(questionId);
+
+        QuestionDTO questionDTO=questionService.getById(questionId);//该方法查询也在用更新也再用
+
+        //累加阅读数
+        questionService.incView(questionId);
         model.addAttribute("question", questionDTO);
         return "question";
     }
