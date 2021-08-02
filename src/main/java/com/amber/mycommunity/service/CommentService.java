@@ -90,6 +90,7 @@ public class CommentService {
         commentExample.createCriteria()
                 .andParentIdEqualTo(id)
                 .andTypeEqualTo(type.getType());
+        //按时间倒序
         commentExample.setOrderByClause("gmt_create desc");
         List<Comment> comments = commentMapper.selectByExample(commentExample);
 
@@ -102,7 +103,7 @@ public class CommentService {
         userIds.addAll(commentators);
 
 
-        // 获取评论人并转换为 Map
+        // 获取评论人并转换为 Map   可以简化时间复杂度不用遍历访问（把USER 和ID绑定起来）
         UserExample userExample = new UserExample();
         userExample.createCriteria()
                 .andIdIn(userIds);

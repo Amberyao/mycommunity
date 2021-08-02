@@ -1,15 +1,20 @@
 package com.amber.mycommunity.controller;
 
+import com.amber.mycommunity.dto.CommentDTO;
 import com.amber.mycommunity.dto.QuestionDTO;
+import com.amber.mycommunity.enums.CommentTypeEnum;
 import com.amber.mycommunity.exception.CustomizeErrorCode;
 import com.amber.mycommunity.exception.CustomizeException;
 import com.amber.mycommunity.mapper.QuestionMapper;
+import com.amber.mycommunity.service.CommentService;
 import com.amber.mycommunity.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 /**
  * @author amber
@@ -19,6 +24,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class QuestionController {
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name ="id") String id, Model model){
@@ -31,9 +39,12 @@ public class QuestionController {
 
         QuestionDTO questionDTO=questionService.getById(questionId);//该方法查询也在用更新也再用
 
+        List<CommentDTO> comments = commentService.listByTargetId(questionId, CommentTypeEnum.QUESTION);
+
         //累加阅读数
         questionService.incView(questionId);
         model.addAttribute("question", questionDTO);
+        model.addAttribute("comments", comments);
         return "question";
     }
 }

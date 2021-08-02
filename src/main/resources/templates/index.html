@@ -4,6 +4,7 @@
     <title>amber的社区</title>
     <head th:insert="~{import :: head}"></head>
 </head>
+<!--判断closable变量是不是true 如果是就关闭浏览器-->
 <script type="application/javascript">
     window.onload = function () {
         var closable = window.localStorage.getItem("closable");

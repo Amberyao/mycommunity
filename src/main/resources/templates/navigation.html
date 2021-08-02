@@ -42,7 +42,10 @@
                     <!--<li><a href="#" data-toggle="modal" data-target="#myModal">登录</a></li>-->
                     <!--<li><a href="https://github.com/login/oauth/authorize?client_id=71fe5a1daf2003ac3300&redirect_uri=http://localhost:8080/callback&scope=user&state=1">登录</a></li>-->
                     <li th:if="${session.user==null}">
+
                         <a href="https://gitee.com/oauth/authorize?client_id=11d662f382b526acf7afd63f0577b7e7ded6d10ccdd33a7c002f66085e6d3a2a&redirect_uri=http://localhost:8080/callback&response_type=code&state=1">登录</a>
+                           <!--
+                        <a href="#" data-toggle="modal" data-target="#myModal">登录</a>-->
                     </li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -58,7 +61,7 @@
                     <h4 class="modal-title" id="myModalLabel">登录注册</h4>
                 </div>
                 <div class="modal-body" style="text-align:center">
-                    <a th:href="@{https://gitee.com/oauth/authorize(client_id='11d662f382b526acf7afd63f0577b7e7ded6d10ccdd33a7c002f66085e6d3a2a',redirect_uri=${#httpServletRequest.getServletContext().getAttribute('giteeRedirectUri')},response_type=code)}">
+                    <a th:href="@{https://gitee.com/oauth/authorize(client_id='11d662f382b526acf7afd63f0577b7e7ded6d10ccdd33a7c002f66085e6d3a2a',redirect_uri=${#httpServletRequest.getServletContext().getAttribute('giteeRedirectUri')},response_type='code',state=1)}">
                         <img src="/images/gitee.png">-->
                     </a>
                     <a th:href="@{https://github.com/login/oauth/authorize(client_id='71fe5a1daf2003ac3300',redirect_uri=${#httpServletRequest.getServletContext().getAttribute('githubRedirectUri')},scope='user',state=1)}">
