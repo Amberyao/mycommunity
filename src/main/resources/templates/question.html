@@ -107,6 +107,7 @@
                             <div th:text="${comment.content}"></div>
                             <div class="menu">
                                 <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                                <!--自定义属性-->
                                 <span th:data-id="${comment.id}"
                                       onclick="collapseComments(this)" class="comment-icon">
                                     <span class="glyphicon glyphicon-comment"></span>

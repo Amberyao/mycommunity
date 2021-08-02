@@ -5,6 +5,7 @@ package com.amber.mycommunity.enums;
  * @date 2021/7/30 16:52
  */
 public enum CommentTypeEnum {
+    //判断回复的是问题还是评论
     QUESTION(1),
     COMMENT(2);
     private Integer type;
