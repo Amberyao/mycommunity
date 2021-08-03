@@ -35,12 +35,10 @@ public class CommentController {
         if (user == null) {
             return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);
         }
-        /*
-        if (commentCreateDTO == null || StringUtils.isBlank(commentDTO.getContent())) {
+
+        if (commentCreateDTO == null || StringUtils.isBlank(commentCreateDTO.getContent())) {
             return ResultDTO.errorOf(CustomizeErrorCode.CONTENT_IS_EMPTY);
         }
-
-         */
 
         Comment comment = new Comment();
         comment.setParentId(commentCreateDTO.getParentId());

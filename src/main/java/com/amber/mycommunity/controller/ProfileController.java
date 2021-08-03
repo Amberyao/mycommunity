@@ -2,6 +2,7 @@ package com.amber.mycommunity.controller;
 
 import com.amber.mycommunity.dto.PaginationDTO;
 import com.amber.mycommunity.model.User;
+import com.amber.mycommunity.service.NotificationService;
 import com.amber.mycommunity.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,8 @@ public class ProfileController {
     @Autowired
     private QuestionService questionService;
 
-    //@Autowired
-    //private NotificationService notificationService;
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("profile/{action}")
     public String profile(HttpServletRequest request,
@@ -42,9 +43,9 @@ public class ProfileController {
             model.addAttribute("pagination", paginationDTO);
         }
         else if ("replies".equals(action)) {
-           // PaginationDTO paginationDTO = notificationService.list(user.getId(), page, size);
+            PaginationDTO paginationDTO = notificationService.list(user.getId(), page, size);
             model.addAttribute("section", "replies");
-           // model.addAttribute("pagination", paginationDTO);
+            model.addAttribute("pagination", paginationDTO);
             model.addAttribute("sectionName", "最新回复");
         }
         return "profile";
