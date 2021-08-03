@@ -1,7 +1,10 @@
 package com.amber.mycommunity.service;
 
+import com.amber.mycommunity.cache.QuestionCache;
 import com.amber.mycommunity.dto.PaginationDTO;
 import com.amber.mycommunity.dto.QuestionDTO;
+import com.amber.mycommunity.dto.QuestionQueryDTO;
+import com.amber.mycommunity.enums.SortEnum;
 import com.amber.mycommunity.exception.CustomizeErrorCode;
 import com.amber.mycommunity.exception.CustomizeException;
 import com.amber.mycommunity.mapper.QuestionExtMapper;
@@ -36,13 +39,47 @@ public class QuestionService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
-    public PaginationDTO list(Integer page, Integer size){
+    @Autowired
+    private QuestionCache questionCache;
+
+    public PaginationDTO list(String search, String tag, String sort, Integer page, Integer size){
+
+        if (StringUtils.isNotBlank(search)) {
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays
+                    .stream(tags)
+                    .filter(StringUtils::isNotBlank)
+                    .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("|"));
+        }
+
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalPage;
 
         //Integer totalCount= questionMapper.count();
-        QuestionExample questionExample = new QuestionExample();
-        Integer totalCount = (int) questionMapper.countByExample(questionExample);
+        //QuestionExample questionExample = new QuestionExample();
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        if (StringUtils.isNotBlank(tag)) {
+            tag = tag.replace("+", "").replace("*", "").replace("?", "");
+            questionQueryDTO.setTag(tag);
+        }
+        for (SortEnum sortEnum : SortEnum.values()) {
+            if (sortEnum.name().toLowerCase().equals(sort)) {
+                questionQueryDTO.setSort(sort);
+
+                if (sortEnum == SortEnum.HOT7) {
+                    questionQueryDTO.setTime(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 7);
+                }
+                if (sortEnum == SortEnum.HOT30) {
+                    questionQueryDTO.setTime(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30);
+                }
+                break;
+            }
+        }
+
+        Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
 
 
         if (totalCount%size==0){
@@ -59,12 +96,17 @@ public class QuestionService {
         }
         paginationDTO.setPagination(totalPage,page);
 
-        Integer offset =size*(page-1);
-
+        //Integer offset =size*(page-1);
         //List<Question> questions = questionMapper.list(offset,size);
+        /*
         QuestionExample example = new QuestionExample();
         example.setOrderByClause("gmt_create desc");
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
+        */
+        Integer offset = page < 1 ? 0 : size * (page - 1);
+        questionQueryDTO.setSize(size);
+        questionQueryDTO.setPage(offset);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
         List<QuestionDTO> questionDTOList=new ArrayList<>();
 
         for (Question question : questions) {
@@ -75,6 +117,10 @@ public class QuestionService {
             questionDTO.setDescription("");
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
+        }
+        List<QuestionDTO> stickies = questionCache.getStickies();
+        if (stickies != null && stickies.size() != 0) {
+            questionDTOList.addAll(0, stickies);
         }
         paginationDTO.setData(questionDTOList);
 
@@ -200,6 +246,8 @@ public class QuestionService {
         if (StringUtils.isBlank(queryDTO.getTag())) {
             return new ArrayList<>();
         }
+
+        //正则匹配
         String[] tags = StringUtils.split(queryDTO.getTag(), ",");
         String regexpTag = Arrays
                 .stream(tags)
@@ -219,4 +267,6 @@ public class QuestionService {
         }).collect(Collectors.toList());
         return questionDTOS;
     }
+
+
 }
